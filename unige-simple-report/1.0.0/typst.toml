@@ -1,0 +1,4 @@
+[package]
+name = "unige-simple-report"
+version = "1.0.0"
+entrypoint = "lib.typ"
