@@ -1,6 +1,18 @@
 #import "@preview/cetz:0.2.2": canvas, plot
 #import "@preview/fletcher:0.5.1" as fletcher: diagram, node, edge
 
+#let globalConfig(doc) = [
+  #set heading(numbering: "1.1")
+  #set text(font: "New Computer Modern", size: 10pt)
+
+  #show heading: it => {
+    text(size: 14pt)[#it]
+    v(1em)
+  }
+
+  #par(justify: true)[#doc]
+]
+
 #let config(
   title: none,
   author: none,
@@ -9,8 +21,8 @@
   semester: none,
   doc
 ) = {
-  set text(font: "New Computer Modern")
   set align(center)
+  set text(font: "New Computer Modern")
 
   let sem_title = if calc.even(semester) {
     "Spring"
@@ -52,7 +64,7 @@
     Prof. #professor #sym.bar.h UNIGE
   ]
   v(10pt)
-  "Notes by" + author
+  "Notes by " + author
   v(10pt)
   "Computer Science Master " + sym.bar.h + " Semester " + str(semester)
   linebreak()
@@ -98,10 +110,11 @@
   pagebreak()
   pagebreak()
 
-  outline(title: [Table of Contents])
+  outline(title: [Table of Contents], indent: 2em)
 
   pagebreak()
-  doc
+  globalConfig(doc)
+  pagebreak()
 }
 
 #let chapterHeader(date: none, course: ()) = {
@@ -110,15 +123,15 @@
     align: horizon + center,
     column-gutter: 5pt,
     line(length: 100%, stroke: rgb("#004A7F")),
-    text(fill: rgb("#004A7F"), size: 10pt)[#date.display("[weekday] [day] [month repr:long] [year]") #sym.bar.h #text(weight: "bold")[Course #course.number : #course.name]]
+    text(fill: rgb("#004A7F"), size: 10pt)[#date.display("[weekday] [day] [month repr:long] [year]") #sym.bar.h #text(weight: "bold")[Cours #course.number : #course.name]]
   )
 }
 
 #let parag(title: none, body) = {
   grid(
-    columns: (3cm, auto),
+    columns: (3.2cm, auto),
     column-gutter: 0.3cm,
-    [*#title*],
+    text(size: 10pt)[*#title*],
     body
   )
 }
@@ -128,7 +141,7 @@
     columns: (2cm, auto),
     column-gutter: 0.3cm,
     grid.vline(x: 0, position: left, stroke: 0.5pt),
-    h(0.3cm) + text(size: 8pt)[_ #title _],
+    pad(left: 0.3cm, text(size: 8pt)[_ #title _]),
     body
   )
 }
@@ -137,59 +150,38 @@
   text(weight: "bold", fill: rgb("#004A7F"))[#body]
 }
 
-#show: doc => config(
-  author: [Tanguy Cavagna],
-  class: [Data Science],
-  professor: [Stéphane Marchand-Maillet],
-  semester: 1,
-  doc
+#let langle = sym.angle.l
+#let rangle = sym.angle.r
+
+#let frame() = (x, y) => (
+  left: 0.5pt,
+  right: 0.5pt,
+  top: if y <= 1 { 0.5pt } else { 0pt },
+  bottom: 0.5pt,
 )
 
-#chapterHeader(
-  date: datetime(year: 2024, month: 9, day: 17),
-  course: (name: [Concepts fondamentaux et applications], number: 1)
-)
+#let foldl1(a, f) = a.slice(1).fold(a.first(), f)
+#let concat(a) = foldl1(a, (acc, x) => acc + x)
+#let nonumber(e) = math.equation(block: true, numbering: none, e)
 
-= Organisation
-
-awdoiajwdoiawjdoiawjd
-
-#parag(title: "Ouvrages de références")[
-  - *awdoiajwdoiawjdoiawjd*: awodij
-  - #important[wadoawdioj / awd $a*2+5^5$]
-
-  #subparag(title: "Question")[
+#let eq(es, numberlast: false) = if es.has("children") {
+  let esf = es.children.filter(x => x != [ ])
+  let bodyOrChildren(e) = if e.body.has("children") { concat(e.body.children) } else { e.body }
+  let hideEquation(e) = if e.has("numbering") and e.numbering == none {
+    nonumber(hide(e))
+  } else [
+    $ #hide(bodyOrChildren(e)) $ #{if e.has("label") { e.label }}
   ]
+  let hidden = box(concat(
+    if numberlast {
+      esf.slice(0, esf.len()-1).map(e => nonumber(hide(e))) + (hideEquation(esf.last()),)
+    } else {
+      esf.map(e => hideEquation(e))
+    }))
+  let folder(acc, e) = acc + if acc != [] { linebreak() } + e
+  let aligned = math.equation(block: true, numbering: none, esf.fold([], folder))
 
-  #let style = (stroke: black, fill: rgb(0, 0, 200, 75))
-
-  #canvas(length: 1cm, {
-    plot.plot(size: (8, 6),
-      x-tick-step: none,
-      x-ticks: ((-calc.pi, $-pi$), (0, $0$), (calc.pi, $pi$)),
-      y-tick-step: 1,
-      {
-        plot.add(
-          style: style,
-          domain: (-calc.pi, calc.pi), calc.sin)
-        plot.add(
-          hypograph: true,
-          style: style,
-          domain: (-calc.pi, calc.pi), calc.cos)
-        plot.add(
-          hypograph: true,
-          style: style,
-          domain: (-calc.pi, calc.pi), x => calc.cos(x + calc.pi))
-      })
-  })
-
-  #canvas({
-    plot.plot(size: (8, 6),
-    {
-      plot.add(domain: (0.1, 5), x => 1 / x)
-    }
-    )
-  })
-
-  $tilde(a)$
-]
+  hidden
+  style(s => v(-measure(hidden, s).height, weak: true))
+  aligned
+}
