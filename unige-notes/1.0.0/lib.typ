@@ -10,6 +10,21 @@
     v(1em)
   }
 
+  #show ref: it => {
+    let eq = math.equation
+    let el = it.element
+    if el != none and el.func() == eq {
+      // Override equation references.
+      numbering(
+        el.numbering,
+        ..counter(eq).at(el.location())
+      )
+    } else {
+      // Other references as usual.
+      it
+    }
+  }
+
   #par(justify: true)[#doc]
 ]
 
@@ -131,7 +146,7 @@
   grid(
     columns: (3.2cm, auto),
     column-gutter: 0.3cm,
-    text(size: 10pt)[*#title*],
+    text(size: 10pt)[#par(justify: false)[*#title*]],
     body
   )
 }
@@ -141,7 +156,7 @@
     columns: (2cm, auto),
     column-gutter: 0.3cm,
     grid.vline(x: 0, position: left, stroke: 0.5pt),
-    pad(left: 0.3cm, text(size: 8pt)[_ #title _]),
+    pad(left: 0.3cm, text(size: 8pt)[#par(justify: false)[_ #title _]]),
     body
   )
 }
@@ -185,3 +200,12 @@
   style(s => v(-measure(hidden, s).height, weak: true))
   aligned
 }
+
+#let rlap(content1, content2) = style(sty => {
+  let w1 = measure(content1, sty).width
+  let w2 = measure(content2, sty).width
+  content1
+  h(-w1)
+  content2
+  h(calc.max(w1, w2) - w2)
+})

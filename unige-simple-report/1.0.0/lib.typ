@@ -79,5 +79,6 @@
   counter(page).update(2)
 
   set align(left)
+  set par(justify: true)
   doc
 }
