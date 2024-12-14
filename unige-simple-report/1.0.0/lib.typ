@@ -8,7 +8,17 @@
   set page(
     header: context {
       if counter(page).get().first() > 1 {
-        authors.first().name
+        for author in authors {
+          author.name.first() + ". "
+          
+          let split = author.name.split(" ")
+          let s = 1
+          while s < split.len() {
+            split.at(s) +" "
+            s += 1
+          }
+          
+        }
         h(1fr)
         title
         linebreak()
