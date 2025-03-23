@@ -81,7 +81,9 @@
   v(10pt)
   "Notes by " + author
   v(10pt)
-  "Computer Science Master " + sym.bar.h + " Semester " + str(semester)
+  "MSc Computer Science " + sym.bar.h + " Semester " + str(semester)
+  linebreak()
+  "University of Geneva, Faculty of Science, Department of Computer Science"
   linebreak()
   sem_title
   v(1fr)
@@ -98,16 +100,16 @@
 
   align(center)[#text(font: "PT Mono", size: 9pt)[#link("mailto:tanguy.cavagna@etu.unige.ch")]]
 
-  "If you did not get this document through my GitHub repository, then you may be interested by the fact that I have one on which I put those typed notes and their \LaTeX{} code. Here is the link (make sure to read the README to understand how to download the files you're interested in):"
+  "If you did not get this document through my GitHub repository, then you may be interested by the fact that I have one on which I put those typed notes and their Typst code. Here is the link (make sure to read the README to understand how to download the files you're interested in):"
 
   align(center)[#link("https://github.com/ToguyC/Computer-Science-Master-Notes")]
 
-  "Please note that the content does not belong to me. I have made some structural changes, reworded some parts, and added some personal notes; but the wording and explanations come mainly from the Professor, and from the book on which they based their course."
+  "Please note that the content does not belong to me. I have made some structural changes, reworded some parts, and added some personal notes; but the wording and explanations come mainly from the Professor, and from the book on which they based their course. "
 
   "Since you are reading this, I will give you a little advice. Sleep is a much more powerful tool than you may imagine, so do not neglect a good night of sleep in favour of studying (especially the night before an exam). I wish you to have fun during your exams."
 
   v(1fr)
-  align(center)[#text(style: "italic")[Version 2024-10-03]]
+  align(center)[#text(style: "italic")[Version 2025-01-05]]
   v(1fr)
 
   pagebreak()
